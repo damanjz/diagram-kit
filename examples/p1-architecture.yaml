@@ -52,7 +52,7 @@ columns:
 band:
   title: Postgres 17 + pgvector
   text: 40 help articles · 50 products · 200 orders · 30 tickets · request log
-  right: "60-case eval: 56/60"
+  right: "60-case eval: 53/60"
 edges:
   - {from: customer, to: guard_in}
   - {from: guard_in, to: core}

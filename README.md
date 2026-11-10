@@ -70,3 +70,7 @@ note: optional footnote
 - Text wraps by measured width; `check` measures the real render and fails if any text leaves its box or the canvas, or two boxes overlap.
 - Palette, fonts, sizes and spacing live only in `dk/theme.py`.
 - Plain SVG with system fonts: no scripts, no external loads, renders in GitHub light and dark mode (the diagram is its own paper card).
+
+## How this was built
+
+Built with Claude Code as a pair programmer. Scope, design decisions and verification are mine. MIT licensed (see `LICENSE`).
