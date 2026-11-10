@@ -46,6 +46,15 @@ def check(svg_path: Path, png: bool = False) -> list[str]:
                 or tx["y"] < b["y"] + 2 or tx["y"] + tx["h"] > b["y"] + b["h"] - 2):
             over = tx["x"] + tx["w"] - (b["x"] + b["w"] - pad)
             problems.append(f"text {tx['s'][:50]!r} leaves box {tx['box']} (right overflow {over:.0f}px)")
+    # two texts in the same box must not overlap (a band's middle text ran under its right-hand number)
+    for i, a in enumerate(texts):
+        for b in texts[i + 1:]:
+            if a["box"] != b["box"]:
+                continue
+            ox = min(a["x"] + a["w"], b["x"] + b["w"]) - max(a["x"], b["x"])
+            oy = min(a["y"] + a["h"], b["y"] + b["h"]) - max(a["y"], b["y"])
+            if ox > 1 and oy > 4:  # line boxes of stacked lines touch by a few px; real collisions overlap more
+                problems.append(f"texts {a['s'][:30]!r} and {b['s'][:30]!r} overlap in {a['box']}")
     rects = [(k, v) for k, v in boxes.items() if k != "canvas"]
     for i, (ka, a) in enumerate(rects):
         for kb, b in rects[i + 1:]:
