@@ -1,0 +1,61 @@
+type: flow
+kicker: FDE Portfolio · 01
+title: How a message becomes a grounded, confirmed answer
+columns:
+  - id: customer
+    tag: Channels
+    title: Customer
+    points:
+      - Local chat page, Slack bot, REST /chat
+      - Hinglish, typos and pushback welcome
+  - id: guard_in
+    tag: Guardrails
+    title: Guard in
+    points:
+      - PII masked in tool output and logs
+      - Injection lines stripped from retrieved text
+      - Authority claims declined
+  - id: core
+    core:
+      tag: Agent loop
+      title: fusion27b:iq3 via Ollama
+      subtitle: Local, one RTX 5080, INR 0 per query
+      children:
+        - id: retrieve
+          title: Retrieve
+          points:
+            - Postgres full-text + pgvector, reciprocal rank fusion
+            - Expanded to whole top-3 articles
+            - Every policy claim cited [KB-xxx]
+        - id: act
+          title: Act
+          style: dark
+          points:
+            - lookup_order with date facts computed in code
+            - check_stock, search_products
+            - start_return, create_ticket wait for Confirm or Cancel
+  - stack:
+      - id: guard_out
+        tag: Checks
+        title: Guard out
+        points:
+          - Citations to unretrieved articles removed
+          - A claimed action without a tool call is retried
+          - Unknown codes and ticket ids blocked
+      - id: reply
+        tag: Output
+        title: Reply and card
+        points:
+          - Answer with citations
+          - Confirmation card for writes; hedged yes never confirms
+          - Hand-off to a person when unsure
+band:
+  title: Postgres 17 + pgvector
+  text: 40 help articles · 50 products · 200 orders · 30 tickets · request log
+  right: "60-case eval: 56/60"
+edges:
+  - {from: customer, to: guard_in}
+  - {from: guard_in, to: core}
+  - {from: core, to: guard_out}
+  - {from: guard_out, to: reply}
+  - {from: core, to: band, dashed: true}

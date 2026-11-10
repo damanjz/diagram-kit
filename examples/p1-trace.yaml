@@ -1,0 +1,25 @@
+type: trace
+kicker: FDE Portfolio · 01
+title: One return request, traced end to end
+lanes:
+  - {id: customer, label: Customer}
+  - {id: api, label: API + guards}
+  - {id: agent, label: Agent (LLM), hot: true}
+  - {id: retrieval, label: Retrieval}
+  - {id: tools, label: Tools}
+  - {id: db, label: Postgres}
+steps:
+  - {from: customer, to: api, text: "“My moka pot from LC-1161 is leaking, I want to return it”"}
+  - {from: api, to: agent, text: "PII masked, injection lines stripped"}
+  - {from: agent, to: retrieval, text: "search: return policy, defects"}
+  - {from: retrieval, to: db, text: "full-text + vector, fused, whole articles", tone: muted}
+  - {from: agent, to: tools, text: "lookup_order LC-1161"}
+  - {from: tools, to: db, text: "order + date facts: window open", tone: muted}
+  - {from: agent, to: tools, text: "start_return: dry run against policy"}
+  - {from: agent, to: api, text: "policy with citation + confirmation card", tone: accent}
+  - {from: api, to: customer, text: "“Free pickup, refund after inspection. Confirm?”", tone: accent}
+  - {from: customer, to: api, text: "“Yes, please go ahead.”  A hedged yes never confirms"}
+  - {from: api, to: tools, text: "start_return executes"}
+  - {from: tools, to: db, text: "return row written", tone: muted}
+  - {from: api, to: customer, text: "“Return started”", tone: accent}
+note: "Lanes are components; arrows are calls in order. Grey arrows are database reads and writes."
